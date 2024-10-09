@@ -16,7 +16,7 @@ logging.basicConfig(
 
 lock = Lock()
 
-def compareFaces(image1: np.ndarray, image2: np.ndarray, threshold: float, modelName: str , backend: str) -> bool:
+def compareFaces(image1: np.ndarray, image2: np.ndarray, threshold: float, backend: str) -> bool:
     """
     Compares two images of faces (passed as NumPy arrays) and returns True if they match, False otherwise.
     The function saves the images as temporary files with unique names (timestamp + uuid), verifies using DeepFace,
@@ -79,7 +79,7 @@ def compareFaces(image1: np.ndarray, image2: np.ndarray, threshold: float, model
             bool: True if the images match based on the threshold.
         """
         try:
-            result = DeepFace.verify(img1_path=img1Path, img2_path=img2Path, detector_backend=backend, model_name=modelName)
+            result = DeepFace.verify(img1_path=img1Path, img2_path=img2Path, detector_backend=backend)
             logging.info(f"Face comparison result: {result}")
             return result['distance'] < threshold
         except Exception as e:
