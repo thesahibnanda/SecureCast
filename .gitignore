@@ -1,0 +1,49 @@
+# Ignore build directories
+/cmake-build-debug/
+/cmake-build-release/
+/cmake-build-*/       # Ignore other build configurations
+
+# Ignore CLion-specific files and directories
+.idea/
+.idea_modules/
+
+# Ignore CMake-specific files
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Ignore compiled object files and binaries
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+*.exe
+*.out
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+*.swp
+*.DS_Store
+*.directory
+
+# Ignore generated files from debugging or profiling tools
+*.gch
+*.gcda
+*.gcno
+*.gcov
+
+# Ignore other temporary files
+*.iml
+*.class
+*.pyc
+*.pyo
+*.idea
+
+# Ignore test executables or other user-specific files
+/tests/
+tests/   # Example if you have a tests folder generated during build
+

@@ -1,2 +1,2 @@
 # SecureCast
-Repository For SecureCast
+This is codebase for Invisible Queue Service
