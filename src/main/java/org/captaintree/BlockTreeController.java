@@ -24,9 +24,9 @@ public class BlockTreeController {
             post("/user/add", (req, res) -> addUser(req.body(), res));
             put("/user/update", (req, res) -> updateUser(req.body(), res));
             post("/user/vote", (req, res) -> voteForParty(req.body(), res));
-            get("/party/votes", (req, res) -> getPartyVotes(req.body(), res));
-            get("/user/vote", (req, res) -> checkUserVote(req.body(), res));
-            get("/user/details", (req, res) -> getUserDetails(req.body(), res));
+            post("/party/votes", (req, res) -> getPartyVotes(req.body(), res));
+            post("/user/check", (req, res) -> checkUserVote(req.body(), res));
+            post("/user/details", (req, res) -> getUserDetails(req.body(), res));
             get("/tree/verify", (req, res) -> verifyTree(res));
             get("/healthz", (req, res) -> healthCheck(res));
             get("/metrics", (req, res) -> getMetrics(res));
