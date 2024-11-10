@@ -5,6 +5,7 @@ import org.captaintree.blocktree.BlockTree;
 import org.captaintree.pojo.Block;
 import org.captaintree.pojo.User;
 import spark.Response;
+import spark.Request;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,9 +19,13 @@ public class BlockTreeController {
 
     public static void main(String[] args) {
         port(4567);
-        path("/api", () -> {
+        path("", () -> {
             post("/user/add", (req, res) -> addUser(req.body(), res));
             put("/user/update", (req, res) -> updateUser(req.body(), res));
+            post("/user/vote", BlockTreeController::voteForParty);
+            get("/party/votes", BlockTreeController::getPartyVotes);
+            get("/user/vote", BlockTreeController::checkUserVote);
+            get("/user/details", BlockTreeController::getUserDetails);
             get("/tree/verify", (req, res) -> verifyTree(res));
             get("/healthz", (req, res) -> healthCheck(res));
             get("/metrics", (req, res) -> getMetrics(res));
@@ -69,6 +74,48 @@ public class BlockTreeController {
         blockTree.shutdown();
         return jsonResponse(res, false, "BlockTree shutdown successfully", null);
     }
+
+    private static String voteForParty(Request req, Response res) {
+        String email = req.queryParams("email");
+        String partyName = req.queryParams("party");
+        if (email == null || partyName == null) {
+            return jsonResponse(res, true, "Email and party name must be provided", null);
+        }
+        String message = blockTree.voteForParty(email, partyName);
+        boolean error = message.contains("already voted") || message.contains("not registered");
+        return jsonResponse(res, error, message, null);
+    }
+
+    private static String getPartyVotes(Request req, Response res) {
+        String partyName = req.queryParams("party");
+        if (partyName == null) {
+            return jsonResponse(res, true, "Party name must be provided", null);
+        }
+        int votes = blockTree.getPartyVoteCount(partyName);
+        return jsonResponse(res, false, "Vote count retrieved", Map.of("party", partyName, "votes", votes));
+    }
+
+    private static String checkUserVote(Request req, Response res) {
+        String email = req.queryParams("email");
+        if (email == null) {
+            return jsonResponse(res, true, "Email must be provided", null);
+        }
+        Map<String, Object> voteInfo = blockTree.checkUserVote(email);
+        return gson.toJson(voteInfo);
+    }
+
+    private static String getUserDetails(Request req, Response res) {
+        String identifier = req.queryParams("identifier"); // Can be email or Aadhaar
+        if (identifier == null) {
+            return jsonResponse(res, true, "Identifier must be provided", null);
+        }
+        User user = blockTree.getUserByEmailOrAadhar(identifier);
+        if (user == null) {
+            return jsonResponse(res, true, "User not found", null);
+        }
+        return jsonResponse(res, false, "User details retrieved", Map.of("user", user));
+    }
+
 
     private static String jsonResponse(Response res, boolean error, String message, Map<String, Object> data) {
         Map<String, Object> responseMap = new HashMap<>();

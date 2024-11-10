@@ -20,15 +20,21 @@ public class BlockTree {
     private final Map<String, Set<Block>> adjacencyList;
     private final Map<String, User> usersByEmail;
     private final Map<String, User> usersByAadhar;
+    private final Map<String, Integer> partyVotes;
+    private final Map<String, String> userVotes;
+
     private final ExecutorService executorService;
 
     public BlockTree(User genesisData) {
         log.info("Initializing BlockTree with genesis data");
+        Block.setTarget("0");
         this.executorService = Executors.newCachedThreadPool();
         this.blocksByHash = new ConcurrentHashMap<>();
         this.adjacencyList = new ConcurrentHashMap<>();
         this.usersByEmail = new ConcurrentHashMap<>();
         this.usersByAadhar = new ConcurrentHashMap<>();
+        this.userVotes = new ConcurrentHashMap<>();
+        this.partyVotes = new ConcurrentHashMap<>();
         this.genesisBlock = new Block(0, genesisData, "0");
         this.blocksByHash.put(genesisBlock.getHash(), genesisBlock);
         this.adjacencyList.put(genesisBlock.getHash(), ConcurrentHashMap.newKeySet());
@@ -48,9 +54,13 @@ public class BlockTree {
     }
 
     public synchronized Future<Block> addBlockAsync(User data) {
-        if (isUserRegisteredByEmail(data.getEmail()) || isUserRegisteredByAadhar(data.getAadharCardNumber())) {
-            log.error("Duplicate registration attempt for user with email {} or Aadhaar {}", data.getEmail(), data.getAadharCardNumber());
-            throw new IllegalArgumentException("User with this email or Aadhaar number is already registered.");
+        if (isUserRegisteredByEmail(data.getEmail())) {
+            log.error("Duplicate registration attempt for user with email {}", data.getEmail());
+            throw new IllegalArgumentException("User with this email is already registered.");
+        }
+        if (isUserRegisteredByAadhar(data.getAadharCardNumber())) {
+            log.error("Duplicate registration attempt for user with Aadhaar {}", data.getAadharCardNumber());
+            throw new IllegalArgumentException("User with this Aadhaar number is already registered.");
         }
         usersByEmail.put(data.getEmail(), data);
         usersByAadhar.put(data.getAadharCardNumber(), data);
@@ -158,5 +168,41 @@ public class BlockTree {
 
     public int getTotalBlocks() {
         return blocksByHash.size();
+    }
+
+    public synchronized String voteForParty(String email, String partyName) {
+        if (!isUserRegisteredByEmail(email)) {
+            log.error("User with email {} is not registered", email);
+            return "User not registered";
+        }
+        if (userVotes.containsKey(email)) {
+            log.error("User with email {} has already voted", email);
+            return "User has already voted";
+        }
+        userVotes.put(email, partyName);
+        partyVotes.merge(partyName, 1, Integer::sum);
+        log.info("User {} voted for party {}", email, partyName);
+        return "Vote cast successfully";
+    }
+
+    public int getPartyVoteCount(String partyName) {
+        return partyVotes.getOrDefault(partyName, 0);
+    }
+
+    public Map<String, Object> checkUserVote(String email) {
+        if (!isUserRegisteredByEmail(email)) {
+            return Map.of("error", true, "message", "User is not registered");
+        }
+        String votedParty = userVotes.get(email);
+        if (votedParty == null) {
+            return Map.of("error", true, "message", "User has not voted yet");
+        }
+        return Map.of("error", false, "party", votedParty);
+    }
+
+    public User getUserByEmailOrAadhar(String identifier) {
+        User user = usersByEmail.getOrDefault(identifier, usersByAadhar.get(identifier));
+        log.info("User retrieved by identifier {}: {}", identifier, user != null ? "found" : "not found");
+        return user;
     }
 }
