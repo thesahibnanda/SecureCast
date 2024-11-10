@@ -103,7 +103,10 @@ public class BlockTreeController {
             return jsonResponse(res, true, "Email must be provided", null);
         }
         Map<String, Object> voteInfo = blockTree.checkUserVote(email);
-        return gson.toJson(voteInfo);
+        if ((boolean) voteInfo.get("error")) {
+            return jsonResponse(res, true, (String) voteInfo.get("message"), null);
+        }
+        return jsonResponse(res, false, String.format("User voted for %s", voteInfo.get("party")), Map.of("party", voteInfo.get("party")));
     }
 
     private static String getUserDetails(String req, Response res) {
