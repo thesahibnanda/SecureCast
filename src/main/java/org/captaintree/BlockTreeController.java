@@ -3,9 +3,10 @@ package org.captaintree;
 import com.google.gson.Gson;
 import org.captaintree.blocktree.BlockTree;
 import org.captaintree.pojo.Block;
+import org.captaintree.pojo.GetUserRequest;
+import org.captaintree.pojo.PartyRequest;
 import org.captaintree.pojo.User;
 import spark.Response;
-import spark.Request;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,10 +23,10 @@ public class BlockTreeController {
         path("", () -> {
             post("/user/add", (req, res) -> addUser(req.body(), res));
             put("/user/update", (req, res) -> updateUser(req.body(), res));
-            post("/user/vote", BlockTreeController::voteForParty);
-            get("/party/votes", BlockTreeController::getPartyVotes);
-            get("/user/vote", BlockTreeController::checkUserVote);
-            get("/user/details", BlockTreeController::getUserDetails);
+            post("/user/vote", (req, res) -> voteForParty(req.body(), res));
+            get("/party/votes", (req, res) -> getPartyVotes(req.body(), res));
+            get("/user/vote", (req, res) -> checkUserVote(req.body(), res));
+            get("/user/details", (req, res) -> getUserDetails(req.body(), res));
             get("/tree/verify", (req, res) -> verifyTree(res));
             get("/healthz", (req, res) -> healthCheck(res));
             get("/metrics", (req, res) -> getMetrics(res));
@@ -75,9 +76,10 @@ public class BlockTreeController {
         return jsonResponse(res, false, "BlockTree shutdown successfully", null);
     }
 
-    private static String voteForParty(Request req, Response res) {
-        String email = req.queryParams("email");
-        String partyName = req.queryParams("party");
+    private static String voteForParty(String req, Response res) {
+        PartyRequest partyRequest = gson.fromJson(req, PartyRequest.class);
+        String email = partyRequest.getEmail();
+        String partyName = partyRequest.getParty();
         if (email == null || partyName == null) {
             return jsonResponse(res, true, "Email and party name must be provided", null);
         }
@@ -86,8 +88,8 @@ public class BlockTreeController {
         return jsonResponse(res, error, message, null);
     }
 
-    private static String getPartyVotes(Request req, Response res) {
-        String partyName = req.queryParams("party");
+    private static String getPartyVotes(String req, Response res) {
+        String partyName = gson.fromJson(req, PartyRequest.class).getParty();
         if (partyName == null) {
             return jsonResponse(res, true, "Party name must be provided", null);
         }
@@ -95,8 +97,8 @@ public class BlockTreeController {
         return jsonResponse(res, false, "Vote count retrieved", Map.of("party", partyName, "votes", votes));
     }
 
-    private static String checkUserVote(Request req, Response res) {
-        String email = req.queryParams("email");
+    private static String checkUserVote(String req, Response res) {
+        String email = gson.fromJson(req, PartyRequest.class).getEmail();
         if (email == null) {
             return jsonResponse(res, true, "Email must be provided", null);
         }
@@ -104,8 +106,8 @@ public class BlockTreeController {
         return gson.toJson(voteInfo);
     }
 
-    private static String getUserDetails(Request req, Response res) {
-        String identifier = req.queryParams("identifier"); // Can be email or Aadhaar
+    private static String getUserDetails(String req, Response res) {
+        String identifier = gson.fromJson(req, GetUserRequest.class).getIdentifier();
         if (identifier == null) {
             return jsonResponse(res, true, "Identifier must be provided", null);
         }
@@ -115,7 +117,6 @@ public class BlockTreeController {
         }
         return jsonResponse(res, false, "User details retrieved", Map.of("user", user));
     }
-
 
     private static String jsonResponse(Response res, boolean error, String message, Map<String, Object> data) {
         Map<String, Object> responseMap = new HashMap<>();

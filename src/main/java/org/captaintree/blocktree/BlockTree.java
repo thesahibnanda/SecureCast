@@ -101,7 +101,7 @@ public class BlockTree {
         List<Map<String, Object>> children = getChildren(block.getHash())
                 .stream()
                 .map(this::buildTreeMap)
-                .collect(Collectors.toList());
+                .toList();
 
         if (!children.isEmpty()) {
             treeMap.put("children", children);
@@ -144,7 +144,7 @@ public class BlockTree {
     public List<Block> getBlocksByUser(User user) {
         List<Block> userBlocks = blocksByHash.values().stream()
                 .filter(block -> block.getData().equals(user))
-                .collect(Collectors.toList());
+                .toList();
         log.info("Retrieved blocks associated with user {}: {}", user, userBlocks.size());
         return userBlocks;
     }
