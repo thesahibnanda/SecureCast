@@ -35,7 +35,13 @@ async def init_otp(request: OTPRequest):
         hashed_otp = HashUtils.hash_string(otp)
         response  = JSONResponse(content={"error": False, "message": "OTP sent successfully"})
         MailUtils.send_mail(Config.SENDER_EMAIL, Config.SENDER_PASSWORD, request.email, Config.SUBJECT, Config.MESSAGE + otp)
-        response.set_cookie(key="otp_hash", value=hashed_otp, max_age=Config.MAX_AGE, secure=True, httponly=True)
+        response.set_cookie(
+                key="otp_hash", 
+                value=hashed_otp, 
+                max_age=Config.MAX_AGE, 
+                secure=False, 
+                samesite="lax",
+                httponly=False)
         return response
     except Exception as e:
         return JSONResponse(content={"error": True, "message": str(e)})
