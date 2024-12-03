@@ -20,6 +20,9 @@ public class BlockTreeController {
 
     public static void main(String[] args) {
         port(4567);
+
+        enableCORS("*", "*", "*");
+
         path("", () -> {
             post("/user/add", (req, res) -> addUser(req.body(), res));
             put("/user/update", (req, res) -> updateUser(req.body(), res));
@@ -28,10 +31,42 @@ public class BlockTreeController {
             post("/user/check", (req, res) -> checkUserVote(req.body(), res));
             post("/user/details", (req, res) -> getUserDetails(req.body(), res));
             get("/tree/verify", (req, res) -> verifyTree(res));
+            get("/tree/get", (req, res) -> getTree(res));
             get("/healthz", (req, res) -> healthCheck(res));
             get("/metrics", (req, res) -> getMetrics(res));
             post("/shutdown", (req, res) -> shutdownBlockTree(res));
         });
+    }
+
+    private static void enableCORS(final String origin, final String methods, final String headers) {
+        options("/*", (request, response) -> {
+            String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+            if (accessControlRequestHeaders != null) {
+                response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+            }
+
+            String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+            if (accessControlRequestMethod != null) {
+                response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+            }
+
+            return "OK";
+        });
+
+        before((request, response) -> {
+            response.header("Access-Control-Allow-Origin", origin);
+            response.header("Access-Control-Allow-Methods", methods);
+            response.header("Access-Control-Allow-Headers", headers);
+            response.header("Access-Control-Allow-Credentials", "true");
+        });
+    }
+
+    private static String getTree(Response response) {
+        try {
+            return jsonResponse(response, false, "All Tree Data", blockTree.getTreeStructure());
+        } catch (Exception e) {
+            return jsonResponse(response, true, e.getMessage(), null);
+        }
     }
 
     private static String addUser(String requestBody, Response res) {
