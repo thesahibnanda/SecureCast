@@ -3,6 +3,7 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from config import Config
 from utils.HashUtils import HashUtils
@@ -12,6 +13,14 @@ from utils.OTPUtils import OTPUtils
 app = FastAPI()
 
 app.add_middleware(SessionMiddleware, secret_key=Config.SECRET_KEY, max_age=Config.MAX_AGE)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"], 
+    allow_headers=["*"],
+)
 
 class OTPRequest(BaseModel):
     email: EmailStr
@@ -44,3 +53,7 @@ async def validate_otp(request: OTPValidationRequest, otp_hash: Optional[str] = 
             return JSONResponse(content={"error": False, "valid": False, "message": "Invalid OTP"})
     except Exception as e:
         return JSONResponse(content={"error": True, "valid": False, "message": str(e)})
+
+@app.get("/healthz")
+async def healthz():
+    return JSONResponse(content={"status": "ok"}, status_code=200)
