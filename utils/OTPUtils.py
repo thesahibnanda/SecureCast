@@ -10,4 +10,4 @@ class OTPUtils:
             return ''.join([str(secrets.choice(range(10))) for _ in range(length)])
         except Exception as e:
             logging.error("Error while generating OTP: " + str(e))
-            raise UtilExceptions.OTPGenerationException(str(e))
+            raise UtilExceptions.OTPException(str(e))

@@ -3,7 +3,6 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.responses import JSONResponse
-from datetime import datetime, timedelta
 
 from config import Config
 from utils.HashUtils import HashUtils
