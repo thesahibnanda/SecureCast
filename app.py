@@ -1,7 +1,6 @@
-from fastapi import FastAPI, Cookie
+import time
+from fastapi import FastAPI, Query
 from pydantic import BaseModel, EmailStr
-from typing import Optional
-from starlette.middleware.sessions import SessionMiddleware
 from starlette.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -11,8 +10,6 @@ from utils.MailUtils import MailUtils
 from utils.OTPUtils import OTPUtils
 
 app = FastAPI()
-
-app.add_middleware(SessionMiddleware, secret_key=Config.SECRET_KEY, max_age=Config.MAX_AGE)
 
 app.add_middleware(
     CORSMiddleware,
@@ -27,17 +24,19 @@ class OTPRequest(BaseModel):
     
 class OTPValidationRequest(BaseModel):
     otp: str
-    otp_hash: str
+    hashOTP: str
+    setTime: float
 
 @app.post("/init-otp")
 async def init_otp(request: OTPRequest):
+    
     try:
         otp = OTPUtils.generate_otp()
         hashed_otp = HashUtils.hash_string(otp)
-        response  = JSONResponse(content={"error": False, "message": "OTP sent successfully"})
         MailUtils.send_mail(Config.SENDER_EMAIL, Config.SENDER_PASSWORD, request.email, Config.SUBJECT, Config.MESSAGE + otp)
-        response.headers["otp_hash"] = hashed_otp
-        return response
+        
+        return JSONResponse(content={"error": False, "message": "OTP sent successfully", "otp": hashed_otp, "time": time.time()})
+    
     except Exception as e:
         return JSONResponse(content={"error": True, "message": str(e)})
 
@@ -45,14 +44,18 @@ async def init_otp(request: OTPRequest):
 async def validate_otp(request: OTPValidationRequest):
     try:
         
-        if not request.otp_hash or request.otp_hash == "":
-            return JSONResponse(content={"error": True, "valid": False, "message": "OTP has expired or not set"})
-        is_valid = HashUtils.validate_hash(request.otp, request.otp_hash)
+        if request.hashOTP is None:
+            return JSONResponse(content={"error": False, "valid": False, "message": "OTP is expired or was never generated"})
         
-        if is_valid:
+        if time.time() - request.setTime > Config.MAX_AGE:
+            return JSONResponse(content={"error": False, "valid": False, "message": "OTP is expired"})
+        
+        if HashUtils.validate_hash(request.otp, request.hashOTP):
             return JSONResponse(content={"error": False, "valid": True, "message": "OTP is valid"})
+        
         else:
             return JSONResponse(content={"error": False, "valid": False, "message": "Invalid OTP"})
+        
     except Exception as e:
         return JSONResponse(content={"error": True, "valid": False, "message": str(e)})
 
