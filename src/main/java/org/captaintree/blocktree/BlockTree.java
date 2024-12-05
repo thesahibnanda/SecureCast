@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.captaintree.pojo.Block;
 import org.captaintree.pojo.User;
+import org.captaintree.utils.MailUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -182,6 +183,7 @@ public class BlockTree {
         userVotes.put(email, partyName);
         partyVotes.merge(partyName, 1, Integer::sum);
         log.info("User {} voted for party {}", email, partyName);
+        MailUtils.sendEmail(email, "Your Vote Is Casted Successfully", String.format("Thank You For Voting To %s", partyName));
         return "Vote cast successfully";
     }
 
