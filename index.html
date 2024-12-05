@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Voting System</title>
+  <link rel="shortcut icon" href="assets/icon/favicon.ico" type="image/x-icon">
+  <style>
+    /* Font Face */
+    @font-face {
+      font-family: 'Bigola Display Regular';
+      src: url('assets/Bigola Display Regular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* Base Styles */
+    body {
+      font-family: 'Bigola Display Regular', sans-serif;
+      background-image: url('assets/backgroud.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    /* Fixed Bar Styling */
+    .fixed-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 12.5%;
+      z-index: 1000;
+      background: linear-gradient(to right, #5F5F5F, #222222);
+      opacity: 0.5;
+      mix-blend-mode: difference;
+      border: 1px solid #000000;
+      backdrop-filter: blur(10px);
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    .fixed-bar p {
+      margin: 0;
+      color: #ffffff;
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 0.140rem;
+      line-height: 2.5rem;
+      transform: scaleY(1.2);
+      z-index: 10000;
+      text-shadow: #000000 2px 2px 2px;
+    }
+
+    /* Main Content */
+    .main-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(15px);
+      color: #ffffff;
+    }
+
+    .main-container h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .main-container .btn-group {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 30px;
+    }
+
+    .btn {
+      background: #555;
+      border: none;
+      color: #ffffff;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      transition: background 0.5s;
+      font-family: 'Bigola Display Regular', sans-serif;
+      text-shadow: #000000 2px 2px 2px;
+      padding: 15px 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: #777;
+      transform: scale(1.05);
+    }
+
+    .btn-signup {
+      background: #007bff;
+    }
+
+    .btn-signup:hover {
+      background: #0056cc;
+    }
+
+    .btn-vote {
+      background: #28a745;
+    }
+
+    .btn-vote:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <!-- Fixed Header -->
+  <div class="fixed-bar">
+    <p>Welcome to Secure Voting System</p>
+  </div>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <h1>What would you like to do?</h1>
+    <div class="btn-group">
+      <a href="reg.html" class="btn btn-signup">Sign Up to Vote / Update Details</a>
+      <a href="vote.html" class="btn btn-vote">Cast Your Vote</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="assets/icon/favicon.ico" type="image/x-icon">
+    <title>Vote Confirmation</title>
+    <style>
+      .confirmation-container {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        text-align: center;
+      }
+
+      .confirmation-container h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        color: #00c3b9;
+      }
+
+      .confirmation-container p {
+        font-size: 1.2em;
+        line-height: 1.5;
+        margin-bottom: 20px;
+      }
+
+      .confirmation-container img {
+        height: auto;
+        max-width: 400px;
+        margin-bottom: 20px;
+      }
+
+      .confirmation-container .btn-back {
+        background: #0072ff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        text-transform: uppercase;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .confirmation-container .btn-back:hover {
+        background: #0056cc;
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="confirmation-container">
+      <img
+        src="https://blogsmedia.lse.ac.uk/blogs.dir/35/files/2019/03/shutterstock_577220044-1024x683.jpg"
+        alt="Success"
+      />
+      <h1>Thank You for Voting!</h1>
+      <p>
+        Your vote has been securely submitted. We appreciate your participation
+        in the democratic process.
+      </p>
+      <button class="btn-back" onclick="redirectHome()">Back to Home</button>
+    </div>
+
+    <script>
+      function redirectHome() {
+        window.location.href = "./index.html"; // Replace with actual home page
+      }
+    </script>
+  </body>
+</html>

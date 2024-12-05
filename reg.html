@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="assets/icon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/icon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/icon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="assets/icon/site.webmanifest" />
+  </head>
+
+  <body>
+    <div class="fixed-bar">
+      <p>Sign Up / Update Details To Vote Securely</p>
+    </div>
+
+    <div class="form-container">
+      <form id="signup-form">
+        <input type="text" placeholder="Name" required />
+        <input type="email" id="email" placeholder="E-Mail Address" required />
+        <input type="text" placeholder="Aadhaar Number" required />
+        <input type="text" placeholder="Address" required />
+
+        <div class="otp-container">
+          <input type="text" placeholder="OTP" required class="otp-input" />
+          <button type="button" class="otp-button" disabled>Get OTP</button>
+        </div>
+
+        <!-- "Upload Face" Button to open the pop-up modal -->
+        <button
+          type="button"
+          id="upload-face"
+          class="upload-face-button"
+          data-captured="false"
+        >
+          Upload Face (Required)
+        </button>
+
+        <!-- Modal Pop-up for Camera -->
+        <div id="camera-modal" class="modal">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <video id="video" autoplay></video>
+            <canvas id="canvas"></canvas>
+            <div class="modal-buttons">
+              <button type="button" id="capture-photo">Capture</button>
+              <button type="button" id="recapture-photo" style="display: none">
+                Recapture
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit">Please Proceed</button>
+      </form>
+    </div>
+
+    <!-- JavaScript embedded inside HTML -->
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

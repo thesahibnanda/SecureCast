@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secure Voting System</title>
+    <link rel="stylesheet" href="vote.css">
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="assets/icon/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+    <!-- Fixed Header -->
+    <div class="fixed-bar" style="position: absolute;">
+        <p>Vote Securely for Your Preferred Party</p>
+    </div>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <!-- Form Section -->
+    <div class="form-container">
+        <form id="voting-form">
+            <!-- Input for Email or Aadhaar -->
+            <div class="input-group">
+                <input type="text" id="identifier" placeholder="E-Mail Address / Aadhaar Card" />
+            </div>
+
+            <!-- OTP Section -->
+            <div class="otp-container">
+                <input type="text" id="otp" placeholder="Enter OTP" required />
+                <button type="button" id="get-otp" class="otp-button">Get OTP</button>
+            </div>
+
+            <!-- Capture Face Section -->
+            <button type="button" id="capture-face" class="upload-face-button" data-captured="false">
+                Capture Face ID (Required)
+            </button>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submit-vote" disabled>Submit Your Vote</button>
+        </form>
+    </div>
+
+    <!-- Party Selection Section -->
+    <div id="party-section">
+        <h2 class="section-title">Choose Your Party</h2>
+        <div id="party-list" class="party-list" style="margin-bottom: 5%;"></div>
+    </div>
+
+    <script src="vote.js" type="module"></script>
+    <br><br><br><br><br><br><br><br><br><br> 
+</body>
+</html>
